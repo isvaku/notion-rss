@@ -1,0 +1,44 @@
+{
+  "name": "notion-rss",
+  "version": "1.0.0",
+  "description": "A project to create notes into Notion from a RSS feed",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "dev": "tsx watch src/index.ts",
+    "build": "npm run clean && tsc --build tsconfig.json",
+    "start": "node dist/index.js",
+    "clean": "rimraf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isvaku/notion-rss.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isvaku/notion-rss/issues"
+  },
+  "homepage": "https://github.com/isvaku/notion-rss#readme",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.7",
+    "ts-jest": "^29.1.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.9.3",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "cron": "^3.1.7",
+    "kafkajs": "^2.2.4",
+    "mongoose": "^8.4.3",
+    "node-html-parser": "^6.1.13",
+    "rss-parser": "^3.13.0",
+    "zod": "^3.23.8"
+  }
+}
