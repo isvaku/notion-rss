@@ -4,6 +4,8 @@ import { CronJob } from "cron";
 import { createNoteBody } from "./utils/note";
 import { FeedItem } from "./utils/types";
 import connectDatabase from "./db/database";
+import { getEntries, insertEntries } from "./service/entry";
+import { IEntry } from "./db/models/entry";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -12,19 +14,12 @@ const notion = new Client({
 const databaseId = process.env.NOTION_DATABASE_ID as string;
 const feedUrl = process.env.RSS_FEED_URL as string;
 
-// Function to create Notion pages from RSS entries
-async function createNotionPage(entry: FeedItem, databaseId: string) {
-  try {
-    const body = createNoteBody(entry, databaseId);
-    const response = await notion.pages.create(body);
-  } catch (error) {
-    console.error("Error creating Notion pages:", error);
-  }
+async function createNotionPage(entry: IEntry, databaseId: string) {
+  const body = createNoteBody(entry, databaseId);
+  return notion.pages.create(body);
 }
 
-// createNotionPages(feedUrl, databaseId);
-
-async function getRSSFeed(rssUrl: string) {
+async function getRSSFeed(rssUrl: string): Promise<FeedItem[]> {
   const parser = new Parser();
 
   try {
@@ -32,20 +27,23 @@ async function getRSSFeed(rssUrl: string) {
     return parsedFeed.items;
   } catch (error) {
     console.error("Error parsing RSS feed:", error);
+    return [];
   }
 }
-
-getRSSFeed(feedUrl).then((entries) => {
-  entries?.forEach((entry) => createNotionPage(entry, databaseId));
-});
 
 async function main() {
   await connectDatabase();
 
   const getEntriesJob = new CronJob(
     "* * * * * ", // cronTime
-    function () {
-      getRSSFeed(feedUrl);
+    async function () {
+      console.log("Getting entries...");
+      const feed = await getRSSFeed(feedUrl);
+      if (feed.length === 0) {
+        console.log("No entries found");
+        return;
+      }
+      await insertEntries(feed);
     }, // onTick
     null, // onComplete
     true, // start
@@ -54,10 +52,29 @@ async function main() {
 
   const createNotionPagesJob = new CronJob(
     "* * * * * ", // cronTime
-    function () {
-      getRSSFeed(feedUrl).then((entries) => {
-        entries?.forEach((entry) => createNotionPage(entry, databaseId));
-      });
+    async function () {
+      console.log("Creating entries...");
+
+      let totalEntriesCreated = 0;
+      const entries = await getEntries();
+
+      for (const entry of entries) {
+        console.log("🚀 ~ entry:", entry);
+        try {
+          await createNotionPage(entry, databaseId);
+
+          entry.created = true;
+          entry.save();
+
+          totalEntriesCreated++;
+        } catch (error) {
+          console.error("Error creating Notion pages:", error);
+          entry.entryErrors?.push((error as unknown as Error).message);
+          entry.save();
+        }
+      }
+
+      console.log(`Entries created: ${totalEntriesCreated}`);
     }, // onTick
     null, // onComplete
     true, // start
