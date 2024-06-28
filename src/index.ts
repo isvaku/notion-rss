@@ -35,7 +35,7 @@ async function main() {
   await connectDatabase();
 
   const getEntriesJob = new CronJob(
-    "* * * * * ", // cronTime
+    "0 * * * * ", // cronTime
     async function () {
       console.log("Getting entries...");
       const feed = await getRSSFeed(feedUrl);
@@ -51,7 +51,7 @@ async function main() {
   );
 
   const createNotionPagesJob = new CronJob(
-    "* * * * * ", // cronTime
+    "10 * * * * ", // cronTime
     async function () {
       console.log("Creating entries...");
 
