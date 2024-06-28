@@ -5,14 +5,15 @@ import {
 } from "@notionhq/client/build/src/api-endpoints";
 import { URL_REGEX } from "./constants";
 import { FeedItem } from "./types";
+import { IEntry } from "src/db/models/entry";
 
 const MAX_RICH_TEXT_LENGTH = 2000;
 
 export function createNoteBody(
-  entry: FeedItem,
+  entry: IEntry,
   databaseId: string
 ): CreatePageParameters {
-  const entryHTML = parse(entry["content:encoded"] ?? entry.content ?? "");
+  const entryHTML = parse(entry.content ?? "");
 
   const noteBody: CreatePageParameters = {
     parent: {
@@ -33,7 +34,7 @@ export function createNoteBody(
         rich_text: [
           {
             text: {
-              content: entry.creator ?? "",
+              content: entry.author ?? "",
             },
           },
         ],
@@ -43,14 +44,14 @@ export function createNoteBody(
       },
       entryDate: {
         date: {
-          start: new Date(entry.isoDate ?? "").toISOString(),
+          start: entry.entryDate.toISOString(),
         },
       },
       summary: {
         rich_text: [
           {
             text: {
-              content: entry.contentSnippet ?? "",
+              content: entry.summary ?? "",
             },
           },
         ],
