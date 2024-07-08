@@ -14,6 +14,9 @@ const notion = new Client({
 const databaseId = process.env.NOTION_DATABASE_ID as string;
 const feedUrl = process.env.RSS_FEED_URL as string;
 
+const entriesCron = process.env.GET_ENTRIES_CRON as string;
+const createPagesCron = process.env.CREATE_NOTION_PAGES_CRON as string;
+
 async function createNotionPage(entry: IEntry, databaseId: string) {
   const body = createNoteBody(entry, databaseId);
   return notion.pages.create(body);
@@ -35,7 +38,7 @@ async function main() {
   await connectDatabase();
 
   const getEntriesJob = new CronJob(
-    "0 * * * * ", // cronTime
+    entriesCron, // cronTime
     async function () {
       console.log("Getting entries...");
       const feed = await getRSSFeed(feedUrl);
@@ -51,7 +54,7 @@ async function main() {
   );
 
   const createNotionPagesJob = new CronJob(
-    "10 * * * * ", // cronTime
+    createPagesCron, // cronTime
     async function () {
       console.log("Creating entries...");
 
@@ -59,7 +62,6 @@ async function main() {
       const entries = await getEntries();
 
       for (const entry of entries) {
-        console.log("🚀 ~ entry:", entry);
         try {
           await createNotionPage(entry, databaseId);
 
@@ -68,7 +70,12 @@ async function main() {
 
           totalEntriesCreated++;
         } catch (error) {
-          console.error("Error creating Notion pages:", error);
+          console.error(
+            "Error creating Notion pages for entry: ",
+            entry.id,
+            " with error: ",
+            error
+          );
           entry.entryErrors?.push((error as unknown as Error).message);
           entry.save();
         }
