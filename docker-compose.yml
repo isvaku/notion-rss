@@ -1,11 +1,11 @@
 version: "3"
 services:
-  node_new:
+  nrss:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: node_new
-    image: isvaku/notion-rss
+    container_name: nrss
+    image: isvaku/notion-rss:v1.0.1
     restart: unless-stopped
     environment:
       TZ: America/Mexico_City
@@ -17,9 +17,11 @@ services:
       MONGO_USER: ""
       MONGO_PASS: ""
       MONGO_DB_NAME: ""
+      GET_ENTRIES_CRON: "0 * * * * "
+      CREATE_NOTION_PAGES_CRON: "*/10 * * * *"
     volumes:
-      - nodeappdatanew:/usr/app
+      - nrss_appdata:/usr/app
 
 volumes:
-  nodeappdatanew:
+  nrss_appdata:
     driver: local
