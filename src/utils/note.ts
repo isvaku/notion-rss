@@ -3,7 +3,7 @@ import {
   BlockObjectRequest,
   CreatePageParameters,
 } from "@notionhq/client/build/src/api-endpoints";
-import { URL_REGEX } from "./constants";
+import { MAX_BODY_LENGTH, URL_REGEX } from "./constants";
 import { FeedItem } from "./types";
 import { IEntry } from "src/db/models/entry";
 
@@ -104,6 +104,9 @@ export function createNoteBody(
         });
     }
   }
+
+  if (noteBody.children && noteBody.children.length > MAX_BODY_LENGTH)
+    noteBody.children = noteBody.children?.slice(0, MAX_BODY_LENGTH);
 
   return noteBody;
 }

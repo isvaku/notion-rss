@@ -80,3 +80,5 @@ export const RESOURCE_TYPES_ALLOWED: readonly string[] = Object.freeze([
   "audio/amr",
   "application/pdf",
 ]);
+
+export const MAX_BODY_LENGTH = 100;
