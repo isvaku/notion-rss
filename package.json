@@ -11,10 +11,10 @@
     "start": "node dist/index.js",
     "clean": "rimraf dist",
     "version": "auto-changelog -p && git add CHANGELOG.md",
-    "build-docker-image": "docker build -t isvaku/$npm_package_name:v$npm_package_version .",
-    "push-docker-image": "docker push isvaku/$npm_package_name:v$npm_package_version",
-    "build-docker-image-win": "docker build -t isvaku/%npm_package_name%:v%npm_package_version% .",
-    "push-docker-image-win": "docker push isvaku/%npm_package_name%:v%npm_package_version%"
+    "build-docker-image": "docker build -t isvaku/$npm_package_name:v$npm_package_version -t isvaku/$npm_package_name:latest .",
+    "push-docker-image": "docker push isvaku/$npm_package_name --all-tags",
+    "build-docker-image-win": "docker build -t isvaku/%npm_package_name%:v%npm_package_version% -t isvaku/%npm_package_name%:latest .",
+    "push-docker-image-win": "docker push isvaku/%npm_package_name% --all-tags"
   },
   "repository": {
     "type": "git",
