@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nrss
-    image: isvaku/notion-rss:v1.0.1
+    image: isvaku/notion-rss:latest
     restart: unless-stopped
     environment:
       TZ: America/Mexico_City
