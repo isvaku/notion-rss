@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import logger from "src/lib/logger";
 
 const connectDatabase = async () => {
   const MONGO_HOST = process.env.MONGO_HOST || "localhost";
@@ -15,13 +16,13 @@ const connectDatabase = async () => {
   // Add DB name
   mongoUrl = `${mongoUrl}/${MONGO_DB_NAME}`;
 
-  console.log("Connecting to database...");
+  logger.info("Connecting to database...");
 
   try {
     await mongoose.connect(mongoUrl);
-    console.info("Connected to database");
+    logger.info("Connected to database");
   } catch (error) {
-    console.error(error);
+    logger.error("Error connecting to Database", error);
     process.exit();
   }
 };
