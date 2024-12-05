@@ -48,6 +48,9 @@ export function toDTO(feed: FeedItem): IEntry {
 export function getEntries() {
   return Entry.find({
     created: false,
+    $expr: {
+      $not: { $gte: [{ $size: "$entryErrors" }, 5] },
+    },
   })
     .sort({ createdAt: 1 })
     .limit(3);
