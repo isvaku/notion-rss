@@ -50,5 +50,6 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t isvaku/${{ github.event.repository.name }}:v${{ github.event.repository.version }} -t isvaku/${{ github.event.repository.name }}:latest .
+          docker buildx create --use
+          docker buildx build --platform linux/arm64 -t isvaku/${{ github.event.repository.name }}:v${{ github.event.repository.version }} -t isvaku/${{ github.event.repository.name }}:latest			
           docker push isvaku/${{ github.event.repository.name }} --all-tags
