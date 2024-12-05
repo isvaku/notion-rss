@@ -1,5 +1,6 @@
 import Entry, { IEntry } from "../db/models/entry";
 import { FeedItem } from "../utils/types";
+import logger from "src/lib/logger";
 
 async function removeInsertedItems(
   items: Array<FeedItem>
@@ -28,9 +29,9 @@ export async function insertEntries(entries: Array<FeedItem>) {
       ordered: false,
     });
 
-    console.log(`Inserted ${entries.length} entries`);
+    logger.info(`Inserted ${entries.length} entries`);
   } catch (error) {
-    console.error("Error inserting entries:", error);
+    logger.error("Error inserting entries:", error);
   }
 }
 
