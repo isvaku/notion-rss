@@ -1,6 +1,6 @@
 {
   "name": "notion-rss",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A project to create notes into Notion from a RSS feed",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
