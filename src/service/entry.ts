@@ -1,6 +1,6 @@
 import Entry, { IEntry } from "../db/models/entry";
 import { FeedItem } from "../utils/types";
-import logger from "src/lib/logger";
+import logger from "../lib/logger";
 
 async function removeInsertedItems(
   items: Array<FeedItem>

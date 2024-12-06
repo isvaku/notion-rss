@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import logger from "src/lib/logger";
+import logger from "../lib/logger";
 
 const connectDatabase = async () => {
   const MONGO_HOST = process.env.MONGO_HOST || "localhost";
